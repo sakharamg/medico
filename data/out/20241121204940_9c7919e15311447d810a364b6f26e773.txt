@@ -1,0 +1,321 @@
+{
+    "id": 456,
+    "tools": [
+        {
+            "Name": "analyze_symptoms",
+            "Description": "Analyzes user-provided symptoms and suggest a medical specialization for disease e.g. cardiologist, dermetalogist, dietician, etc",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "The symptoms described by the user in natural language."
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "symptoms"
+            ],
+            "Returns": {
+                "type": "dictionary",
+                "description": {
+                    "analysis": "string containing detailed symptom analysis.",
+                    "specialization": "specialization name for the disease"
+                }
+            }
+        },
+        {
+            "Name": "get_available_specialists",
+            "Description": "Fetches a list of specialists based on analyzed symptoms and their availability.",
+            "Parameters": [
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "List of symptoms derived from user input."
+                },
+                {
+                    "param_name": "specialization",
+                    "type": "string",
+                    "default": "None",
+                    "description": "specialization name for the appointment"
+                },
+                {
+                    "param_name": "user_schedule",
+                    "type": "object",
+                    "default": "None",
+                    "description": "User's preferred schedule for appointments in key-value pairs (e.g., {'date': 'YYYY-MM-DD', 'time_range': 'HH:MM-HH:MM'})."
+                }
+            ],
+            "Required Parameters": [
+                "symptoms",
+                "user_schedule"
+            ],
+            "Returns": {
+                "type": "dictionary",
+                "description": " returns single best schedule {specialist_id,name, available_slot including time in HH:MM-HH:MM format and date in DD/MM/YY format}."
+            }
+        },
+        {
+            "Name": "confirm_appointment",
+            "Description": "Confirms an appointment slot and stores it in the hospital's database.",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "specialist_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the chosen specialist."
+                },
+                {
+                    "param_name": "appointment_time_date",
+                    "type": "string",
+                    "default": "None",
+                    "description": "The selected time slot for the appointment as time in HH:MM-HH:MM format and date in DD/MM/YY format."
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "specialist_id",
+                "appointment_time"
+            ],
+            "Returns": {
+                "type": "boolean",
+                "description": "Always returns True."
+            }
+        },
+        {
+            "Name": "save_appointment_history",
+            "Description": "Saves appointment information in the user's database for later reference and recurring use cases.",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "The symptoms described by the user."
+                },
+                {
+                    "param_name": "specialist_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the chosen specialist."
+                },
+                {
+                    "param_name": "appointment_time_date",
+                    "type": "string",
+                    "default": "None",
+                    "description": "The selected time slot for the appointment as time in HH:MM-HH:MM format and date in DD/MM/YY format."
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "symptoms",
+                "specialist_id",
+                "appointment_time_date"
+            ],
+            "Returns": {
+                "type": "boolean",
+                "description": "Always true"
+            }
+        },
+        {
+            "Name": "retrieve_past_complaints",
+            "Description": "Fetches the user's past complaints matching the given symptoms for analysis and reference.",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "List of symptoms to search for in past complaints."
+                },
+                {
+                    "param_name": "date_range",
+                    "type": "object",
+                    "default": "None",
+                    "description": "Optional date range filter in the format {'start_date': 'YYYY-MM-DD', 'end_date': 'YYYY-MM-DD'}."
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "symptoms"
+            ],
+            "Returns": {
+                "type": "array",
+                "description": "Array of past complaints related to the specified symptoms."
+            }
+        },
+        {
+            "Name": "store_symptoms",
+            "Description": "Stores the symptoms reported by the user and initiates a follow-up process to gather additional details for a more accurate analysis.",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Symptoms of user."
+                },
+                {
+                    "param_name": "timestamp",
+                    "type": "object",
+                    "default": "None",
+                    "description": "Save date and time of the event"
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "symptoms",
+                "timestamp"
+            ],
+            "Returns": {
+                "type": "boolean",
+                "description": "Status always true"
+            }
+        }
+    ],
+    "interaction_trajectory": [
+        {
+            "from": "user",
+            "value": "I've been having a persistent cough, chest pain, and difficulty breathing. I also feel feverish and fatigued."
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User reports symptoms suggestive of a respiratory infection.",
+                "action": "Query for available pulmonologists."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_available_specialists",
+                "parameters": {
+                    "symptoms": "persistent cough, chest pain, difficulty breathing, fever, fatigue",
+                    "user_schedule": {
+                        "date": "2024-12-05",
+                        "time_range": "10:00-16:00"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": {
+                    "specialist_id": "789",
+                    "name": "Dr. Alex Smith (Pulmonologist)",
+                    "available_slot": {
+                        "date": "2024-12-05",
+                        "time": "14:00-14:30"
+                    }
+                }
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Found an available pulmonologist.",
+                "action": "Propose the appointment to the user."
+            }
+        },
+        {
+            "from": "planner",
+            "value": "Dr. Alex Smith (Pulmonologist) has an available slot on 2024-12-05 from 14:00-14:30. Would you like to book this appointment?"
+        },
+        {
+            "from": "user",
+            "value": "Yes, please book it."
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "confirm_appointment",
+                "parameters": {
+                    "user_id": "456",
+                    "specialist_id": "789",
+                    "appointment_time_date": "14:00-14:30, 05/12/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "save_appointment_history",
+                "parameters": {
+                    "user_id": "456",
+                    "symptoms": "persistent cough, chest pain, difficulty breathing, fever, fatigue",
+                    "specialist_id": "789",
+                    "appointment_time_date": "14:00-14:30, 05/12/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "store_symptoms",
+                "parameters": {
+                    "user_id": "456",
+                    "symptoms": "persistent cough, chest pain, difficulty breathing, fever, fatigue",
+                    "timestamp": "2024-12-01T10:00:00"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment confirmed and details saved.",
+                "action": "Confirm appointment with the user."
+            }
+        },
+        {
+            "from": "planner",
+            "value": "Your appointment with Dr. Alex Smith is confirmed for 14:00 on 2024-12-05. We have also stored your symptoms for future reference."
+        }
+    ]
+}

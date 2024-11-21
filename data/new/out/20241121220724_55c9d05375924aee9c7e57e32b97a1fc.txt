@@ -1,0 +1,195 @@
+{
+    "interaction_trajectory": [
+        {
+            "from": "user",
+            "value": "My child has had a high fever for five days, along with a rash, swollen lymph nodes in his neck, red eyes, and swollen hands and feet. His lips are also chapped and red."
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "The child's symptoms (high fever for five days, rash, swollen lymph nodes, red eyes, swollen hands and feet, chapped and red lips) suggest a potential serious illness, possibly Kawasaki disease.",
+                "action": "Check for past similar complaints using the retrieve_past_complaints tool and consult recent similar symptoms using RAG."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "retrieve_past_complaints",
+                "parameters": {
+                    "user_id": "456",
+                    "symptoms": "fever, rash, swollen lymph nodes, red eyes, swollen hands, swollen feet, chapped lips",
+                    "date_range": {
+                        "start_date": "2024-01-01",
+                        "end_date": "2024-11-23"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": []
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "No similar past complaints found. The combination of symptoms and duration warrants immediate consultation with a pediatrician.",
+                "action": "Find available pediatricians using get_available_specialists."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_available_specialists",
+                "parameters": {
+                    "symptoms": "high fever, rash, swollen lymph nodes, red eyes, swollen hands, swollen feet, chapped lips",
+                    "specialization": "pediatrician",
+                    "user_schedule": {
+                        "date": "2024-11-24",
+                        "time_range": "09:00-17:00"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": {
+                    "specialist_id": "654",
+                    "name": "Dr. Sarah Chen (Pediatrician)",
+                    "available_slot": {
+                        "date": "2024-11-24",
+                        "time": "10:00-10:30"
+                    }
+                }
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Dr. Chen has an available slot.  Propose this appointment to the user.",
+                "action": "Ask the user to confirm the appointment with Dr. Sarah Chen (Pediatrician) on 2024-11-24 at 10:00 AM."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_input_from_user",
+                "parameters": {
+                    "user_id": "456",
+                    "questions": "Dr. Sarah Chen (Pediatrician) is available on November 24th at 10:00 AM. Would you like to book this appointment?"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": "Yes, that would be great."
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User has confirmed the appointment",
+                "action": "I should confirm the appointment and store it in db"
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "confirm_appointment",
+                "parameters": {
+                    "user_id": "456",
+                    "specialist_id": "654",
+                    "appointment_time_date": "10:00-10:30, 24/11/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment confirmed. Next, I should save the aapointment history and store symptoms.",
+                "action": "Save the appointment history."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "save_appointment_history",
+                "parameters": {
+                    "user_id": "456",
+                    "symptoms": "high fever, rash, swollen lymph nodes, red eyes, swollen hands, swollen feet, chapped lips",
+                    "specialist_id": "654",
+                    "appointment_time_date": "10:00-10:30, 24/11/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment history stored successfully. Next, I should store the symptoms.",
+                "action": "Store the symptoms."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "store_symptoms",
+                "parameters": {
+                    "user_id": "456",
+                    "symptoms": "high fever, rash, swollen lymph nodes, red eyes, swollen hands, swollen feet, chapped lips",
+                    "timestamp": "2024-11-23T11:15:00"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Symptoms stored successfully. Next, I should notify the user about confirmed appointment.",
+                "action": "Notify the user about confirmed appointment."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "notify_user",
+                "parameters": {
+                    "user_id": "456",
+                    "message": "Your appointment with Dr. Chen is confirmed for November 24th at 10:00 AM. We have recorded your symptoms for reference."
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment confirmed and user notified.",
+                "action": "<END>"
+            }
+        }
+    ]
+}

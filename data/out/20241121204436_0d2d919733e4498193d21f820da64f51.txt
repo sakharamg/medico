@@ -1,0 +1,316 @@
+{
+    "id": 456,
+    "tools": [
+        {
+            "Name": "analyze_symptoms",
+            "Description": "Analyzes user-provided symptoms and suggest a medical specialization for disease e.g. cardiologist, dermetalogist, dietician, etc",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "The symptoms described by the user in natural language."
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "symptoms"
+            ],
+            "Returns": {
+                "type": "dictionary",
+                "description": {
+                    "analysis": "string containing detailed symptom analysis.",
+                    "specialization": "specialization name for the disease"
+                }
+            }
+        },
+        {
+            "Name": "get_available_specialists",
+            "Description": "Fetches a list of specialists based on analyzed symptoms and their availability.",
+            "Parameters": [
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "List of symptoms derived from user input."
+                },
+                {
+                    "param_name": "specialization",
+                    "type": "string",
+                    "default": "None",
+                    "description": "specialization name for the appointment"
+                },
+                {
+                    "param_name": "user_schedule",
+                    "type": "object",
+                    "default": "None",
+                    "description": "User's preferred schedule for appointments in key-value pairs (e.g., {'date': 'YYYY-MM-DD', 'time_range': 'HH:MM-HH:MM'})."
+                }
+            ],
+            "Required Parameters": [
+                "symptoms",
+                "user_schedule"
+            ],
+            "Returns": {
+                "type": "dictionary",
+                "description": " returns single best schedule {specialist_id,name, available_slot including time in HH:MM-HH:MM format and date in DD/MM/YY format}."
+            }
+        },
+        {
+            "Name": "confirm_appointment",
+            "Description": "Confirms an appointment slot and stores it in the hospital's database.",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "specialist_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the chosen specialist."
+                },
+                {
+                    "param_name": "appointment_time_date",
+                    "type": "string",
+                    "default": "None",
+                    "description": "The selected time slot for the appointment as time in HH:MM-HH:MM format and date in DD/MM/YY format."
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "specialist_id",
+                "appointment_time"
+            ],
+            "Returns": {
+                "type": "boolean",
+                "description": "Always returns True."
+            }
+        },
+        {
+            "Name": "save_appointment_history",
+            "Description": "Saves appointment information in the user's database for later reference and recurring use cases.",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "The symptoms described by the user."
+                },
+                {
+                    "param_name": "specialist_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the chosen specialist."
+                },
+                {
+                    "param_name": "appointment_time_date",
+                    "type": "string",
+                    "default": "None",
+                    "description": "The selected time slot for the appointment as time in HH:MM-HH:MM format and date in DD/MM/YY format."
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "symptoms",
+                "specialist_id",
+                "appointment_time_date"
+            ],
+            "Returns": {
+                "type": "boolean",
+                "description": "Always true"
+            }
+        },
+        {
+            "Name": "store_symptoms",
+            "Description": "Stores the symptoms reported by the user and initiates a follow-up process to gather additional details for a more accurate analysis.",
+            "Parameters": [
+                {
+                    "param_name": "user_id",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Unique identifier for the user."
+                },
+                {
+                    "param_name": "symptoms",
+                    "type": "string",
+                    "default": "None",
+                    "description": "Symptoms of user."
+                },
+                {
+                    "param_name": "timestamp",
+                    "type": "object",
+                    "default": "None",
+                    "description": "Save date and time of the event"
+                }
+            ],
+            "Required Parameters": [
+                "user_id",
+                "symptoms",
+                "timestamp"
+            ],
+            "Returns": {
+                "type": "boolean",
+                "description": "Status always true"
+            }
+        }
+    ],
+    "interaction_trajectory": [
+        {
+            "from": "user",
+            "value": "I've been incredibly thirsty lately, and I'm always tired. I also seem to be using the restroom more frequently, especially at night."
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User describes excessive thirst, fatigue, and frequent urination, which could indicate a metabolic disorder.",
+                "action": "Analyze symptoms to determine possible specializations."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "analyze_symptoms",
+                "parameters": {
+                    "user_id": "456",
+                    "symptoms": "Excessive thirst, fatigue, frequent urination"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": {
+                    "analysis": "The symptoms suggest a possible endocrine issue, potentially related to blood sugar regulation.",
+                    "specialization": "Endocrinologist"
+                }
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Endocrinologist is the recommended specialization.",
+                "action": "Find available endocrinologists and suitable appointment slots."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_available_specialists",
+                "parameters": {
+                    "symptoms": "Excessive thirst, fatigue, frequent urination",
+                    "specialization": "Endocrinologist",
+                    "user_schedule": {
+                        "date": "2024-12-05",
+                        "time_range": "13:00-17:00"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": {
+                    "specialist_id": "789",
+                    "name": "Dr. David Lee (Endocrinologist)",
+                    "available_slot": {
+                        "date": "2024-12-05",
+                        "time": "14:00-14:30"
+                    }
+                }
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Dr. David Lee has an available slot.",
+                "action": "Propose the appointment to the user."
+            }
+        },
+        {
+            "from": "planner",
+            "value": "Dr. David Lee is available on 2024-12-05 from 14:00-14:30. Would you like to book this appointment?"
+        },
+        {
+            "from": "user",
+            "value": "Yes, please book it."
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "confirm_appointment",
+                "parameters": {
+                    "user_id": "456",
+                    "specialist_id": "789",
+                    "appointment_time_date": "14:00-14:30, 05/12/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "save_appointment_history",
+                "parameters": {
+                    "user_id": "456",
+                    "symptoms": "Excessive thirst, fatigue, frequent urination",
+                    "specialist_id": "789",
+                    "appointment_time_date": "14:00-14:30, 05/12/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "store_symptoms",
+                "parameters": {
+                    "user_id": "456",
+                    "symptoms": "Excessive thirst, fatigue, frequent urination",
+                    "timestamp": "2024-11-21T16:00:00"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment confirmed and details saved.",
+                "action": "Confirm with the user."
+            }
+        },
+        {
+            "from": "planner",
+            "value": "Your appointment with Dr. David Lee is confirmed for 2024-12-05 at 14:00. Your symptoms have been recorded.  Is there anything else?"
+        }
+    ]
+}

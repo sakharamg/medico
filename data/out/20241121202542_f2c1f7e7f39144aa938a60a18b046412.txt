@@ -1,0 +1,158 @@
+{
+    "interaction_trajectory": [
+        {
+            "from": "user",
+            "value": "I have had a throbbing headache on the right side of my head for the past 2 days.  It's accompanied by nausea and sensitivity to light."
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User reports symptoms consistent with migraine: throbbing headache, nausea, and photophobia.",
+                "action": "Check for past similar complaints using RAG and then suggest appropriate specialist and appointment slot."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "retrieve_past_complaints",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "throbbing headache, nausea, light sensitivity",
+                    "date_range": {
+                        "start_date": "2024-01-01",
+                        "end_date": "2024-11-21"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": [
+                    {
+                        "date": "2024-10-05",
+                        "symptoms": "throbbing headache, nausea",
+                        "diagnosis": "Migraine"
+                    },
+                    {
+                        "date": "2024-09-12",
+                        "symptoms": "similar symptoms, but less severe",
+                        "diagnosis": "possible migraine"
+                    }
+                ]
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Past complaints reveal a history of migraine-like symptoms. This strengthens the hypothesis.",
+                "action": "Suggest Neurologist appointment based on symptoms and user schedule."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_available_specialists",
+                "parameters": {
+                    "symptoms": "throbbing headache, nausea, light sensitivity",
+                    "specialization": "Neurologist",
+                    "user_schedule": {
+                        "date": "2024-11-25",
+                        "time_range": "13:00-18:00"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": {
+                    "specialist_id": "987",
+                    "name": "Dr. John Smith (Neurologist)",
+                    "available_slot": {
+                        "date": "2024-11-25",
+                        "time": "15:00-15:30"
+                    }
+                }
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Dr. John Smith has an available slot that fits user's schedule.",
+                "action": "Present appointment details to the user for confirmation."
+            }
+        },
+        {
+            "from": "assistant",
+            "value": "Based on your symptoms, I suggest an appointment with Dr. John Smith (Neurologist) on 2024-11-25 at 15:00.  Would you like to confirm?"
+        },
+        {
+            "from": "user",
+            "value": "Yes"
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "confirm_appointment",
+                "parameters": {
+                    "user_id": "789",
+                    "specialist_id": "987",
+                    "appointment_time_date": "15:00-15:30, 25/11/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "save_appointment_history",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "throbbing headache, nausea, light sensitivity",
+                    "specialist_id": "987",
+                    "appointment_time_date": "15:00-15:30, 25/11/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "store_symptoms",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "throbbing headache, nausea, light sensitivity",
+                    "timestamp": "2024-11-22T10:00:00"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment confirmed and symptoms stored.",
+                "action": "Inform user of confirmation and thank them."
+            }
+        },
+        {
+            "from": "assistant",
+            "value": "Your appointment with Dr. John Smith is confirmed for 3 PM on November 25th, 2024. Your symptoms have been recorded. Thank you!"
+        }
+    ]
+}

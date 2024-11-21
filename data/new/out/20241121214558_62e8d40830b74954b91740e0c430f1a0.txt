@@ -1,0 +1,206 @@
+{
+    "interaction_trajectory": [
+        {
+            "from": "user",
+            "value": "I've had a runny nose, sore throat, and a cough for a few days. I'm also feeling a bit tired and achy."
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User reports symptoms consistent with a common cold (runny nose, sore throat, cough, fatigue, and body aches).",
+                "action": "Check for past similar complaints using the retrieve_past_complaints tool."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "retrieve_past_complaints",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "runny nose, sore throat, cough, fatigue, body aches"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": []
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "No similar complaints found in the user's history. These symptoms are usually self-limiting, but it's always good to check in with a doctor if they persist or worsen.",
+                "action": "Ask the user if they would like to book an appointment with a General Practitioner."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_input_from_user",
+                "parameters": {
+                    "user_id": "789",
+                    "questions": "Would you like to book an appointment with a General Practitioner to discuss your symptoms further?"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": "Yes, that would be helpful."
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User confirmed they would like to book an appointment.",
+                "action": "Get the user's availability and find a suitable GP appointment."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_input_from_user",
+                "parameters": {
+                    "user_id": "789",
+                    "questions": "What dates and times are you available for an appointment?"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": "I'm available any afternoon next week."
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User is available next week afternoons. Now, find a suitable appointment with a General Practitioner.",
+                "action": "Use get_available_specialists to find an available GP."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_available_specialists",
+                "parameters": {
+                    "symptoms": "runny nose, sore throat, cough, fatigue, body aches",
+                    "specialization": "General Practitioner",
+                    "user_schedule": {
+                        "date": "2024-11-25",
+                        "time_range": "13:00-18:00"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": {
+                    "specialist_id": "101",
+                    "name": "Dr. Jane Doe (General Practitioner)",
+                    "available_slot": {
+                        "date": "2024-11-26",
+                        "time": "14:00-14:30"
+                    }
+                }
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Found an available slot. Confirm with user.",
+                "action": "Propose appointment to user and confirm."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_input_from_user",
+                "parameters": {
+                    "user_id": "789",
+                    "questions": "Dr. Jane Doe has an appointment available on 2024-11-26 at 2PM, does that work for you?"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": "Yes, that works."
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User confirmed appointment time.",
+                "action": "Confirm the appointment and save information."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "confirm_appointment",
+                "parameters": {
+                    "user_id": "789",
+                    "specialist_id": "101",
+                    "appointment_time_date": "14:00-14:30, 26/11/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": true
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "save_appointment_history",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "runny nose, sore throat, cough, fatigue, body aches",
+                    "specialist_id": "101",
+                    "appointment_time_date": "14:00-14:30, 26/11/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": true
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "store_symptoms",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "runny nose, sore throat, cough, fatigue, body aches",
+                    "timestamp": "2024-11-23T12:00:00Z"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": true
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "notify_user",
+                "parameters": {
+                    "user_id": "789",
+                    "message": "Your appointment with Dr. Doe is confirmed for November 26th at 2PM. We have saved your symptoms for your records."
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": true
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment successfully booked and user notified.",
+                "action": "<END>"
+            }
+        }
+    ]
+}
