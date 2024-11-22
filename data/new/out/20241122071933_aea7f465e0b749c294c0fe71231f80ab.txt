@@ -1,0 +1,170 @@
+{
+    "interaction_trajectory": [
+        {
+            "from": "user",
+            "value": "I have this burning, throbbing pain in my left hand and wrist. It started after a minor fall a few weeks ago, but it's gotten much worse.  My hand is also swollen, stiff, and very sensitive to touch. Sometimes it feels hot or cold, and the skin color changes."
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "The user describes chronic pain, swelling, stiffness, temperature and skin color changes in their hand and wrist following an injury, which could indicate Complex Regional Pain Syndrome (CRPS).",
+                "action": "Check for past complaints with similar symptoms using retrieve_past_complaints tool."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "retrieve_past_complaints",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "pain, swelling, stiffness, temperature changes, skin color changes, hand, wrist"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": []
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "No similar past complaints found. The symptoms warrant a specialist consultation, potentially a neurologist or pain specialist.",
+                "action": "Find available specialists using the get_available_specialists tool, prioritizing neurologists and pain specialists."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_available_specialists",
+                "parameters": {
+                    "symptoms": "burning pain, throbbing pain, swelling, stiffness, sensitivity to touch, temperature changes, skin color changes, hand, wrist",
+                    "specialization": "neurologist, pain specialist",
+                    "user_schedule": {
+                        "date": "2024-12-05",
+                        "time_range": "09:00-17:00"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": {
+                    "specialist_id": "654",
+                    "name": "Dr. Sarah Chen (Neurologist)",
+                    "available_slot": {
+                        "date": "2024-12-05",
+                        "time": "11:00-11:30"
+                    }
+                }
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Dr. Chen (Neurologist) has an available slot. Propose this appointment to the user.",
+                "action": "Ask the user if they want to book an appointment with Dr. Chen on 2024-12-05 at 11:00 AM."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_input_from_user",
+                "parameters": {
+                    "user_id": "789",
+                    "questions": "Dr. Sarah Chen (Neurologist) has an appointment available on December 5th at 11:00 AM. Would you like to book this appointment?"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": "Yes, that would be great."
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "The user confirmed the appointment.",
+                "action": "Confirm the appointment using the confirm_appointment tool and save the appointment details."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "confirm_appointment",
+                "parameters": {
+                    "user_id": "789",
+                    "specialist_id": "654",
+                    "appointment_time_date": "11:00-11:30, 05/12/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "save_appointment_history",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "burning pain, throbbing pain, swelling, stiffness, sensitivity to touch, temperature changes, skin color changes, hand, wrist",
+                    "specialist_id": "654",
+                    "appointment_time_date": "11:00-11:30, 05/12/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "store_symptoms",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "burning pain, throbbing pain, swelling, stiffness, sensitivity to touch, temperature changes, skin color changes, hand, wrist",
+                    "timestamp": "2024-11-23T12:00:00"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "notify_user",
+                "parameters": {
+                    "user_id": "789",
+                    "message": "Your appointment with Dr. Chen is confirmed for December 5th at 11:00 AM.  We have recorded your symptoms for reference."
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment booking and storage successful. User notified.",
+                "action": "<END>"
+            }
+        }
+    ]
+}
