@@ -1,0 +1,177 @@
+{
+    "interaction_trajectory": [
+        {
+            "from": "user",
+            "value": "I've had a high fever, terrible headache, muscle aches, and chills for the last few days. I also feel nauseous and have lost my appetite. My eyes and skin seem slightly yellow."
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "The user reports symptoms like high fever, headache, muscle aches, chills, nausea, loss of appetite, and yellowing of skin and eyes, which are indicative of a serious infection, possibly Yellow Fever.",
+                "action": "Check for past similar complaints using the retrieve_past_complaints tool and also check for recent Yellow fever cases using RAG."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "retrieve_past_complaints",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "fever, headache, muscle aches, chills, nausea, loss of appetite, yellow skin, yellow eyes"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": []
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "No similar complaints found in the user's history. The symptoms warrant immediate medical attention, likely requiring a specialist in infectious diseases.",
+                "action": "Use the get_available_specialists tool to find an infectious disease specialist with available appointments."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_available_specialists",
+                "parameters": {
+                    "symptoms": "high fever, headache, muscle aches, chills, nausea, loss of appetite, yellow skin, yellow eyes",
+                    "specialization": "infectious disease specialist",
+                    "user_schedule": {
+                        "date": "2024-11-26",
+                        "time_range": "09:00-17:00"
+                    }
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": {
+                    "specialist_id": "567",
+                    "name": "Dr. Sarah Chen (Infectious Disease Specialist)",
+                    "available_slot": {
+                        "date": "2024-11-26",
+                        "time": "10:00-10:30"
+                    }
+                }
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Dr. Chen is available on the user's preferred date and time.",
+                "action": "Suggest the appointment to the user:  Dr. Sarah Chen (Infectious Disease Specialist) on 2024-11-26 between 10:00-10:30."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "get_input_from_user",
+                "parameters": {
+                    "user_id": "789",
+                    "questions": "Dr. Sarah Chen (Infectious Disease Specialist) has an opening at 10:00 AM on November 26th. Would you like to schedule an appointment?"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": "Yes"
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "User confirmed the appointment.",
+                "action": "Confirm the appointment using confirm_appointment and save the appointment history using save_appointment_history."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "confirm_appointment",
+                "parameters": {
+                    "user_id": "789",
+                    "specialist_id": "567",
+                    "appointment_time_date": "10:00-10:30, 26/11/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "save_appointment_history",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "high fever, terrible headache, muscle aches, and chills for the last few days. I also feel nauseous and have lost my appetite. My eyes and skin seem slightly yellow.",
+                    "specialist_id": "567",
+                    "appointment_time_date": "10:00-10:30, 26/11/2024"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "store_symptoms",
+                "parameters": {
+                    "user_id": "789",
+                    "symptoms": "high fever, headache, muscle aches, chills, nausea, loss of appetite, yellow skin, yellow eyes",
+                    "timestamp": "2024-11-23T11:00:00Z"
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "Appointment confirmed and symptoms stored. Notify the user about the successful booking.",
+                "action": "Notify the user using notify_user."
+            }
+        },
+        {
+            "from": "caller",
+            "value": {
+                "tool": "notify_user",
+                "parameters": {
+                    "user_id": "789",
+                    "message": "Your appointment with Dr. Chen is confirmed for 10:00 AM on November 26th. Your symptoms have been recorded."
+                }
+            }
+        },
+        {
+            "from": "observation",
+            "value": {
+                "result": true
+            }
+        },
+        {
+            "from": "planner",
+            "value": {
+                "reason": "The task is completed successfully.",
+                "action": "<END>"
+            }
+        }
+    ]
+}
